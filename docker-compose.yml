@@ -28,3 +28,18 @@ services:
       - "5432"
     command: -p 5432
     restart: always
+  inventory-service-db:
+    container_name: mysql
+    image: mysql:8.0.26
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: inventory-service
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./database/inventory-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    restart: always
