@@ -13,5 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderCreateResponseDto implements Serializable {
+    private String orderNumber;
     private List<OrderLineItemsDto> orderLineItems;
 }
