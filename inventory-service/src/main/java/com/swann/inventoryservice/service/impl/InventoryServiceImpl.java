@@ -2,7 +2,7 @@ package com.swann.inventoryservice.service.impl;
 
 import com.swann.inventoryservice.dto.InventoryCreateRequestDto;
 import com.swann.inventoryservice.model.Inventory;
-import com.swann.inventoryservice.model.InventoryResponseDto;
+import com.swann.inventoryservice.dto.InventoryResponseDto;
 import com.swann.inventoryservice.repository.InventoryRepository;
 import com.swann.inventoryservice.service.InventoryService;
 import lombok.RequiredArgsConstructor;

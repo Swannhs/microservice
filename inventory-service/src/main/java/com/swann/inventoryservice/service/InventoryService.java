@@ -1,7 +1,7 @@
 package com.swann.inventoryservice.service;
 
 import com.swann.inventoryservice.dto.InventoryCreateRequestDto;
-import com.swann.inventoryservice.model.InventoryResponseDto;
+import com.swann.inventoryservice.dto.InventoryResponseDto;
 
 import java.util.List;
 
