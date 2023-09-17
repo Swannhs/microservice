@@ -1,5 +1,6 @@
-package com.swann.inventoryservice.model;
+package com.swann.inventoryservice.dto;
 
+import com.swann.inventoryservice.model.Inventory;
 import lombok.Getter;
 import lombok.Setter;
 
