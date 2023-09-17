@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  db:
+  product-service-db:
     container_name: mongo
     image: mongo:4.4.14-rc0-focal
     restart: always
@@ -9,3 +9,22 @@ services:
       - "27017:27017"
     expose:
       - "27017"
+    volumes:
+      - ./data/mongo/db:/data/mongo
+  order-service-db:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_DB: order-service
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+    volumes:
+      - ./data/postgres:/data/postgres
+      - ./database/order-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    command: -p 5432
+    restart: always
