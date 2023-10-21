@@ -1,39 +1,74 @@
 version: '3'
 
 services:
-  discovery-server:
-    container_name: discovery-server
-    image: discovery-server
-    build:
-      context: discover-server
-      dockerfile: Dockerfile
+  consul:
+    container_name: consul
+    image: consul:1.15.4
     ports:
-      - "8761:8761"
-    expose:
-      - "8761"
-    restart: always
-  api-gateway:
-    container_name: api-gateway
-    image: api-gateway
-    build:
-      context: api-gateway
-      dockerfile: Dockerfile
+      - "8500:8500"
+      - "8600:8600/udp"
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+      CONSUL_CLIENT_INTERFACE: eth0
+    command:
+      - agent
+      - -dev
+      - -client=0.0.0.0
+      - -log-level=ERR
+    volumes:
+      - ./data/consul:/consul/data
+    networks:
+      - swann_network
+    logging:
+      driver: none
+  traefik:
+    container_name: traefik
+    image: traefik:v3.0
+    command:
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --api.insecure=true
+      - --providers.consulcatalog
+      - --providers.consulcatalog.endpoint.address=http://consul:8500
+      - --providers.consulcatalog.prefix=traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.krakend.rule=Host(`api-gateway.local`)"
+      - "traefik.http.routers.krakend.entrypoints=web"
     ports:
-      - "8888:8888"
-    expose:
-      - "8888"
+      - "8000:80"
+      - "9090:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
-      - discovery-server
+      - consul
+    networks:
+      - swann_network
+
+  krakend:
+    container_name: krakend
+    image: devopsfaith/krakend:latest
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./krakend/krakend-config.json:/etc/krakend/krakend.json
+    environment:
+      - DEBUG=1
+    networks:
+      - swann_network
+
   product-service-db:
     container_name: mongo
     image: mongo:4.4.14-rc0-focal
     restart: always
     ports:
       - "27017:27017"
-    expose:
-      - "27017"
     volumes:
       - ./data/mongo/db:/data/mongo
+    networks:
+      - swann_network
+
   order-service-db:
     container_name: postgres
     image: postgres
@@ -47,10 +82,10 @@ services:
       - ./database/order-service/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-    expose:
-      - "5432"
-    command: -p 5432
     restart: always
+    networks:
+      - swann_network
+
   inventory-service-db:
     container_name: mysql
     image: mysql:8.0.26
@@ -63,6 +98,73 @@ services:
       - ./database/inventory-service/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
-    expose:
-      - "3306"
     restart: always
+    networks:
+      - swann_network
+
+  product-service:
+    container_name: product-service
+    image: product-service
+    build:
+      context: product-service
+      dockerfile: Dockerfile
+    depends_on:
+      - consul
+      - product-service-db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.product-service.loadbalancer.server.port=8181"
+      - "traefik.http.routers.product-service.rule=Host(`product-service.local`)"
+      - "traefik.http.routers.product-service.entrypoints=web"
+    ports:
+      - "8181:8181"
+    networks:
+      - swann_network
+
+  order-service:
+    container_name: order-service
+    image: order-service
+    build:
+      context: order-service
+      dockerfile: Dockerfile
+    depends_on:
+      - consul
+      - order-service-db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.order-service.loadbalancer.server.port=8182"
+      - "traefik.http.routers.order-service.rule=Host(`order-service.local`)"
+      - "traefik.http.routers.order-service.entrypoints=web"
+    ports:
+      - "8182:8182"
+    networks:
+      - swann_network
+
+  inventory-service:
+    container_name: inventory-service
+    image: inventory-service
+    build:
+      context: inventory-service
+      dockerfile: Dockerfile
+    depends_on:
+      - consul
+      - inventory-service-db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.inventory-service.loadbalancer.server.port=8183"
+      - "traefik.http.routers.inventory-service.rule=Host(`inventory-service.local`)"
+      - "traefik.http.routers.inventory-service.entrypoints=web"
+    ports:
+      - "8183:8183"
+    networks:
+      - swann_network
+
+networks:
+  swann_network:
+    driver: bridge

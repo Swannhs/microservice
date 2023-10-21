@@ -1,0 +1,46 @@
+{
+  "version": 3,
+  "name": "My API Gateway",
+  "port": 8080,
+  "cache_ttl": "3600s",
+  "timeout": "3s",
+  "endpoints": [
+    {
+      "endpoint": "/api/product/{proxy+}",
+      "method": "ANY",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "host": ["http://product-service:8181"],
+          "url_pattern": "/api/product/{proxy+}",
+          "method": "ANY"
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/order/{proxy+}",
+      "method": "ANY",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "host": ["http://order-service:8282"],
+          "url_pattern": "/api/order/{proxy+}",
+          "method": "ANY"
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/inventory/{proxy+}",
+      "method": "ANY",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "host": ["http://inventory-service:8183"],
+          "url_pattern": "/api/inventory/{proxy+}",
+          "method": "ANY",
+          "encoding": "no-op"
+        }
+      ]
+    }
+  ]
+}

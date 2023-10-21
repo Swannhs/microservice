@@ -22,7 +22,7 @@ COPY --from=builder /app/target/*.jar app.jar
 # Copy the application-docker.yml configuration into the image
 COPY --from=builder /app/src/main/resources/application-docker.yml /config/application-docker.yml
 
-EXPOSE 8181
+EXPOSE 8183
 
 # Adjust the ENTRYPOINT to use the Docker profile and point to the config
 ENTRYPOINT ["java", "-jar", "/app.jar", "--spring.profiles.active=docker", "--spring.config.location=file:/config/"]

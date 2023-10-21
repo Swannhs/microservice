@@ -2,7 +2,7 @@ spring:
   application:
     name: inventory-service
   datasource:
-    url: jdbc:mysql://localhost:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://inventory-service-db:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,7 +22,7 @@ spring:
     import: "optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}/"
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
       discovery:
         prefer-ip-address: true
