@@ -18,6 +18,14 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+    default-schema: public
+    url: jdbc:mysql://localhost:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    user: root
+    password: root
+    drop-first: false
   config:
     import: "optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}/"
   cloud:
@@ -35,3 +43,9 @@ spring:
         enabled: true
 server:
   port: 8183
+springfox:
+  documentation:
+    type: swagger_2
+    enabled: true  # Set false to disable
+  swagger-ui:
+    base-url: /swagger-ui/  # URL to access swagger UI
