@@ -1,28 +1,19 @@
 spring:
   application:
-    name: inventory-service
+    name: order-service
   datasource:
-    url: jdbc:mysql://localhost:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:postgresql://order-service-db:5432/order-service
     username: root
     password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
+    jpa:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: true
-        use_sql_comments: true
-        jdbc:
-          lob:
-            non_contextual_creation: true
+        ddl-auto: update
+        show-sql: true
   config:
     import: "optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}/"
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
       discovery:
         prefer-ip-address: true
@@ -34,4 +25,12 @@ spring:
       config:
         enabled: true
 server:
-  port: 8183
+  port: 8182
+
+logging:
+  level:
+    root: INFO
+
+networks:
+  swann_network:
+    driver: bridge
