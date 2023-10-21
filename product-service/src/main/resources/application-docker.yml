@@ -25,6 +25,13 @@ spring:
 server:
   port: 8181
 
+springfox:
+  documentation:
+    type: swagger_2
+    enabled: true  # Set false to disable
+  swagger-ui:
+    base-url: /swagger-ui/  # URL to access swagger UI
+
 logging:
   level:
     root: INFO

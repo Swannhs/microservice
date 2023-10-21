@@ -6,6 +6,14 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+    default-schema: public
+    url: jdbc:mysql://inventory-service-db:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    user: root
+    password: root
+    drop-first: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -35,3 +43,9 @@ spring:
         enabled: true
 server:
   port: 8183
+springfox:
+  documentation:
+    type: swagger_2
+    enabled: true  # Set false to disable
+  swagger-ui:
+    base-url: /swagger-ui/  # URL to access swagger UI
