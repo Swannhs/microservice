@@ -1,11 +1,23 @@
 spring:
   application:
     name: inventory-service
+  devtools:
+    remote:
+      restart:
+        enabled: true
   datasource:
-    url: jdbc:mysql://localhost:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://inventory-service-db:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+    default-schema: public
+    url: jdbc:mysql://inventory-service-db:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    user: root
+    password: root
+    drop-first: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,19 +30,11 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-  liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
-    enabled: true
-    default-schema: public
-    url: jdbc:mysql://localhost:3306/inventory-service?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-    user: root
-    password: root
-    drop-first: false
   config:
     import: "optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}/"
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
       discovery:
         prefer-ip-address: true

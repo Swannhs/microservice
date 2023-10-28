@@ -22,4 +22,9 @@ public class InventoryController {
     public ResponseEntity<?> createInventory(@RequestBody InventoryCreateRequestDto inventoryCreateRequestDto) {
         return new ResponseEntity<>(inventoryService.createInventory(inventoryCreateRequestDto), HttpStatus.CREATED);
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "New testing 2";
+    }
 }

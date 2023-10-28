@@ -15,8 +15,8 @@ services:
       - -dev
       - -client=0.0.0.0
       - -log-level=ERR
-    volumes:
-      - ./data/consul:/consul/data
+#    volumes:
+#      - ./data/consul:/consul/data
     networks:
       - swann_network
     logging:
@@ -113,6 +113,9 @@ services:
       - product-service-db
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    volumes:
+      - ./product-service:/app
+      - ~/.m2:/root/.m2
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.product-service.loadbalancer.server.port=8181"
@@ -134,6 +137,9 @@ services:
       - order-service-db
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    volumes:
+      - ./order-service:/app
+      - ~/.m2:/root/.m2
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.order-service.loadbalancer.server.port=8182"
@@ -155,6 +161,9 @@ services:
       - inventory-service-db
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    volumes:
+      - ./inventory-service:/app
+      - ~/.m2:/root/.m2
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.inventory-service.loadbalancer.server.port=8183"

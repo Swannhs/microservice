@@ -3,14 +3,14 @@ spring:
     name: product-service
   data:
     mongodb:
-      host: localhost
+      host: product-service-db
       port: 27017
       database: product-service
   config:
     import: "optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}/"
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
       discovery:
         prefer-ip-address: true
@@ -35,7 +35,3 @@ springfox:
 logging:
   level:
     root: INFO
-
-networks:
-  swann_network:
-    driver: bridge
